@@ -20,7 +20,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   String myOTP = "";
   String phoneNumber = "";
   bool OTP_sent = false;
-  bool OTP_varified = true;
+  bool OTP_varified = false;
   bool obscurePassword = true;
 
   final _formKey = GlobalKey<FormState>();
@@ -88,11 +88,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                   const SizedBox(height: 25,),
 
                   // Mobile number text-field
-                  auth_TextFormField(newPasswordController, const Icon(Icons.password_outlined), "New Password", "Enter a Password"),
+                  auth_TextFormField(newPasswordController, const Icon(Icons.password_outlined), "New Password", "Enter a Password", obscureText: true),
 
                   const SizedBox(height: 15,),
 
-                  auth_TextFormField(newPasswordController, const Icon(Icons.password_outlined), "Confirm New Password", "Enter a Password"),
+                  auth_TextFormField(confirmNewPasswordController, const Icon(Icons.password_outlined), "Confirm New Password", "Enter a Password", obscureText: true),
 
                   const SizedBox(height: 20,),
 
@@ -255,7 +255,6 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   Future<void> varifyOTP(String number) async{
-    if(_formKey.currentState!.validate()){
       if(!OTP_sent){
         await FirebaseAuth.instance.verifyPhoneNumber(
             phoneNumber: "+91"+number,
@@ -294,7 +293,6 @@ class _ResetPasswordState extends State<ResetPassword> {
           });
         });
       }
-    }
   }
 
   Future<void> updatePassword(String newPassword) async {

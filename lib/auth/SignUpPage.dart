@@ -24,6 +24,19 @@ class _SignUpPageState extends State<SignUpPage> {
   final userIdController = TextEditingController();
   final passwordController = TextEditingController();
 
+  Map<String, int> updateItem = {
+    'Other': 0,
+    'Deposit': 0,
+    'Withdraw': 0,
+    'Bank': 0,
+    'Business': 0,
+    'Food': 0,
+    'Grocery': 0,
+    'Hotel': 0,
+    'Stationary': 0,
+    'Collage': 0,
+    'Festivals': 0,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +117,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 15,),
 
                 // Password text-field
-                auth_TextFormField(passwordController, const Icon(Icons.password_outlined), "password", "Enter Password"),
+                auth_TextFormField(passwordController, const Icon(Icons.password_outlined), "password", "Enter Password", obscureText: true),
 
               const SizedBox(height: 20,),
 
@@ -182,6 +195,7 @@ class _SignUpPageState extends State<SignUpPage> {
             .then((value){
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BottomNavigation()));
         });
+        await FirebaseFirestore.instance.collection('credit_analysis').doc(user.uid).set(updateItem);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('User created successfully!'),duration: Duration(seconds: 1),));
 
       } catch (error) {

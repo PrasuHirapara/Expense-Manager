@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Constants/AppColors.dart';
 import '../auth/LoginPage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -91,7 +92,7 @@ class _SettingsState extends State<Settings> {
               const SizedBox(height: 20,),
 
               ListTile(
-                leading: const Icon(Icons.change_circle_outlined,color: Colors.white,size: 35,),
+                leading: const Icon(Icons.change_circle_outlined,color: Colors.white,size: 30,),
                 title: Text('Change Password',style: settingTextStyle()),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPassword()));
@@ -101,14 +102,24 @@ class _SettingsState extends State<Settings> {
               const Divider(),
 
               ListTile(
-                leading: const Icon(Icons.bug_report_outlined,color: Colors.white,size: 35,),
+                leading: const Icon(Icons.bug_report_outlined,color: Colors.white,size: 30,),
                 title: Text('Report a Bug',style: settingTextStyle()),
               ),
 
               const Divider(),
 
               ListTile(
-                leading: const Icon(Icons.logout_outlined,color: Colors.white,size: 35,),
+                onTap: (){
+                  _launchGmail();
+                },
+                leading: const Icon(Icons.developer_board,color: Colors.white,size: 30,),
+                title: Text('Contact Developer',style: settingTextStyle()),
+              ),
+
+              const Divider(),
+
+              ListTile(
+                leading: const Icon(Icons.logout_outlined,color: Colors.white,size: 30,),
                 title: Text('Log out',style: settingTextStyle()),
                 onTap: (){
                   showDialog(
@@ -139,7 +150,7 @@ class _SettingsState extends State<Settings> {
               const Divider(),
 
               ListTile(
-                leading: const Icon(Icons.delete_outline,color: Colors.white,size: 35,),
+                leading: const Icon(Icons.delete_outline,color: Colors.white,size: 30,),
                 title: Text('Delete Account',style: settingTextStyle()),
                 onTap: (){
                   showDialog(
@@ -224,5 +235,12 @@ class _SettingsState extends State<Settings> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()),duration: const Duration(seconds: 3),));
     }
+  }
+
+  void _launchGmail() async {
+    const email = 'prasuhirpara@gmail.com';
+    const url = 'mailto:$email';
+
+    await launch(url);
   }
 }

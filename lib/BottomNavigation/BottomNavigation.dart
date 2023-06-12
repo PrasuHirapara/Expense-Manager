@@ -16,9 +16,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
   int _selectedIndex = 1;
 
   final List<Widget> _widgetOption = <Widget>[
-    Settings(),
-    HomePage(),
-    Analysis(),
+    const Settings(),
+    const HomePage(),
+    const Analysis(),
   ];
 
   @override

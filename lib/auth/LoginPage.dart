@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 15,),
 
                 // Password text-field
-                auth_TextFormField(passwordController, const Icon(Icons.password_outlined), "Password", "Enter Password"),
+                auth_TextFormField(passwordController, const Icon(Icons.password_outlined), "Password", "Enter Password", obscureText: true),
 
                 const SizedBox(height: 15,),
 
