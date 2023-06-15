@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController descriptionController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int credited = 2;
+  int credited = 0;
   int debited = 0;
   int selectedIndex = 0;
 
@@ -30,19 +30,21 @@ class _HomePageState extends State<HomePage> {
     0: 'Other',
     1: 'Deposit',
     2: 'Withdraw',
-    3: 'Bank',
-    4: 'Business',
-    5: 'Food',
-    6: 'Grocery',
-    7: 'Hotel',
-    8: 'Stationary',
-    9: 'Collage',
-    10: 'Festivals',
+    3: 'Investment',
+    4: 'Bank',
+    5: 'Business',
+    6: 'Food',
+    7: 'Grocery',
+    8: 'Hotel',
+    9: 'Stationary',
+    10: 'Collage',
+    11: 'Festivals',
   };
-  Map<String, int> updateCreditItem = {
+  Map<String, dynamic> CreditItem = {
     'Other': 0,
     'Deposit': 0,
     'Withdraw': 0,
+    'Investment': 0,
     'Bank': 0,
     'Business': 0,
     'Food': 0,
@@ -52,10 +54,11 @@ class _HomePageState extends State<HomePage> {
     'Collage': 0,
     'Festivals': 0,
   };
-  Map<String, int> updateDebitItem = {
+  Map<String, dynamic> DebitItem = {
     'Other': 0,
     'Deposit': 0,
     'Withdraw': 0,
+    'Investment': 0,
     'Bank': 0,
     'Business': 0,
     'Food': 0,
@@ -75,7 +78,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: appPrimary,
       key: _scaffoldKey,
@@ -373,17 +375,18 @@ class _HomePageState extends State<HomePage> {
     await firestore.collection('credit_analysis').doc(userUID).get();
 
     DocumentSnapshot documentSnapshot0 =
-    await firestore.collection('credit_analysis').doc(userUID).get();
+    await firestore.collection('debit_analysis').doc(userUID).get();
 
     if (documentSnapshot.exists) {
-      Map<String, int> map = documentSnapshot.data() as Map<String, int>;
+      Map<String, dynamic> map = documentSnapshot.data() as Map<String, dynamic>;
       setState(() {
-        updateCreditItem = map;
+        CreditItem = map;
       });
-    }else if(documentSnapshot0.exists){
-      Map<String, int> map2 = documentSnapshot0.data() as Map<String, int>;
+    }
+    if(documentSnapshot0.exists){
+      Map<String, dynamic> map2 = documentSnapshot0.data() as Map<String, dynamic>;
       setState(() {
-        updateDebitItem = map2;
+        DebitItem = map2;
       });
     } else {
       return;
@@ -434,7 +437,7 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(docs[index]['date'], style: const TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white),
                               ),
@@ -443,12 +446,12 @@ class _HomePageState extends State<HomePage> {
 
                               docs[index]['credited'] != 0
                                   ? Text('credited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 17,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.green),
                               )
                                   :  Text('debited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 17,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.red),
                               )
@@ -491,6 +494,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Container _buildBottomSheet(BuildContext context){
+
+    final Map<String, double> updateCreditItem = CreditItem.map(
+          (key, value) => MapEntry(key, value.toDouble()),
+    );
+    final Map<String, double> updateDebitItem = DebitItem.map(
+          (key, value) => MapEntry(key, value.toDouble()),
+    );
+
     return Container(
         height: 380,
         width: MediaQuery.of(context).size.width,
@@ -552,6 +563,7 @@ class _HomePageState extends State<HomePage> {
                child: Row(
                  mainAxisAlignment: MainAxisAlignment.start,
                  children: [
+                   // other
                    GestureDetector(
                      onTap: (){
                        setState(() {
@@ -576,7 +588,8 @@ class _HomePageState extends State<HomePage> {
                      ),
                    ),
                    const SizedBox(width: 5,),
-                   GestureDetector(
+                   //deposit
+                   credit ? const SizedBox(height: 1,) : GestureDetector(
                      onTap: (){
                        setState(() {
                          selectedIndex = 1;
@@ -600,7 +613,8 @@ class _HomePageState extends State<HomePage> {
                      ),
                    ),
                    const SizedBox(width: 5,),
-                   GestureDetector(
+                   //Withdraw
+                   debit ? const SizedBox(height: 1,) : GestureDetector(
                      onTap: (){
                        setState(() {
                          selectedIndex = 2;
@@ -624,6 +638,8 @@ class _HomePageState extends State<HomePage> {
                      ),
                    ),
                    const SizedBox(width: 5,),
+                   //
+                   //Investment
                    GestureDetector(
                      onTap: (){
                        setState(() {
@@ -648,6 +664,7 @@ class _HomePageState extends State<HomePage> {
                      ),
                    ),
                    const SizedBox(width: 5,),
+                   //Bank
                    GestureDetector(
                      onTap: (){
                        setState(() {
@@ -672,6 +689,7 @@ class _HomePageState extends State<HomePage> {
                      ),
                    ),
                    const SizedBox(width: 5,),
+                   //Business
                    GestureDetector(
                      onTap: (){
                        setState(() {
@@ -696,7 +714,8 @@ class _HomePageState extends State<HomePage> {
                      ),
                    ),
                    const SizedBox(width: 5,),
-                   GestureDetector(
+                   //Food
+                   credit ? const SizedBox(height: 1,) : GestureDetector(
                      onTap: (){
                        setState(() {
                          selectedIndex = 6;
@@ -719,8 +738,9 @@ class _HomePageState extends State<HomePage> {
                        child: Center(child: Text(item[6]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                      ),
                    ),
-                   const SizedBox(width: 5,),
-                   GestureDetector(
+                   credit ? const SizedBox(height: 1,) :const SizedBox(width: 5,),
+                   //Grocery
+                   credit ? const SizedBox(height: 1,) : GestureDetector(
                      onTap: (){
                        setState(() {
                          selectedIndex = 7;
@@ -743,8 +763,9 @@ class _HomePageState extends State<HomePage> {
                        child: Center(child: Text(item[7]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                      ),
                    ),
-                   const SizedBox(width: 5,),
-                   GestureDetector(
+                   credit ? const SizedBox(height: 1,) : const SizedBox(width: 5,),
+                   //Hotel
+                   credit ? const SizedBox(height: 1,) : GestureDetector(
                      onTap: (){
                        setState(() {
                          selectedIndex = 8;
@@ -767,8 +788,9 @@ class _HomePageState extends State<HomePage> {
                        child: Center(child: Text(item[8]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                      ),
                    ),
-                   const SizedBox(width: 5,),
-                   GestureDetector(
+                   credit ? const SizedBox(height: 1,) :const SizedBox(width: 5,),
+                   // Stationary
+                   credit ? const SizedBox(height: 1,) : GestureDetector(
                      onTap: (){
                        setState(() {
                          selectedIndex = 9;
@@ -791,7 +813,8 @@ class _HomePageState extends State<HomePage> {
                        child: Center(child: Text(item[9]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                      ),
                    ),
-                   const SizedBox(width: 5,),
+                   credit ? const SizedBox(height: 1,) : const SizedBox(width: 5,),
+                   //Collage
                    GestureDetector(
                      onTap: (){
                        setState(() {
@@ -813,6 +836,31 @@ class _HomePageState extends State<HomePage> {
                            )
                        ),
                        child: Center(child: Text(item[10]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                     ),
+                   ),
+                   const SizedBox(width: 5,),
+                   //Festivals
+                   GestureDetector(
+                     onTap: (){
+                       setState(() {
+                         selectedIndex = 11;
+                         _scaffoldKey
+                             .currentState
+                             ?.showBottomSheet((context) => _buildBottomSheet(context));
+                       });
+                     },
+                     child: Container(
+                       width: 100,
+                       height: 50,
+                       decoration: BoxDecoration(
+                           color: Colors.black,
+                           borderRadius: BorderRadius.circular(15),
+                           border: Border.all(
+                               color: selectedIndex == 11 ? Colors.white : Colors.black,
+                               width: 2
+                           )
+                       ),
+                       child: Center(child: Text(item[11]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                      ),
                    ),
                    const SizedBox(width: 5,),
