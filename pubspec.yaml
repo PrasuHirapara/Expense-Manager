@@ -49,6 +49,7 @@ dev_dependencies:
   firebase_storage: ^11.2.2
   google_sign_in: ^6.1.4
   url_launcher: ^6.0.12
+  pie_chart: ^5.3.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

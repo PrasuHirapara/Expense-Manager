@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:expenses_manager/Constants/TextStyle.dart';
 import 'package:expenses_manager/auth/ResetPassword.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -211,7 +212,9 @@ class _SettingsState extends State<Settings> {
         registration_date = userData['registration_date'];
       });
     } else {
-      print('User data not found.');
+      if (kDebugMode) {
+        print('User data not found.');
+      }
     }
   }
 
