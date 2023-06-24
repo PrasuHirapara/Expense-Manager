@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pie_chart/pie_chart.dart';
 
+import '../Constants/AppColors.dart';
+
 class Analysis extends StatefulWidget {
   const Analysis({Key? key}) : super(key: key);
 
@@ -14,8 +16,6 @@ class _AnalysisState extends State<Analysis> {
 
   int credited = 0;
   int debited = 0;
-
-  // var arr = {'Other','Deposit','Withdraw','Bank','Business','Food','Grocery','Hotel','Stationary','Collage','Festivals'};
 
   Map<String, dynamic> updateCreditItem = {
     'Other': 0,
@@ -56,13 +56,9 @@ class _AnalysisState extends State<Analysis> {
     Colors.brown,
     Colors.indigo,
     Colors.pink,
-    Colors.purple
+    Colors.purple,
+    Colors.teal
   ];
-
-  // @override
-  // void initState(){
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +73,7 @@ class _AnalysisState extends State<Analysis> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade800,
+      backgroundColor: appSecondary,
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -86,8 +82,12 @@ class _AnalysisState extends State<Analysis> {
               children: [
                 Card(
                   elevation: 8,
+                  color: appSecondary,
                   child: Container(
-                    color: Colors.black,
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                      borderRadius: BorderRadius.circular(40)
+                    ),
                     child: PieChart(
                       dataMap: credit,
                       animationDuration: const Duration(milliseconds: 1000),
@@ -97,6 +97,7 @@ class _AnalysisState extends State<Analysis> {
                       chartType: ChartType.ring,
                       ringStrokeWidth: 32.0,
                       centerText: "Credited",
+                      colorList: colorList,
                       chartValuesOptions: const ChartValuesOptions(
                         showChartValueBackground: true,
                         showChartValuesInPercentage: true,
@@ -113,8 +114,12 @@ class _AnalysisState extends State<Analysis> {
                   ),
                 ),
                 Card(
+                  color: appSecondary,
                   child: Container(
-                    color: Colors.black,
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(40)
+                    ),
                     child: PieChart(
                       dataMap: debit,
                       animationDuration: const Duration(milliseconds: 1000),
@@ -124,6 +129,7 @@ class _AnalysisState extends State<Analysis> {
                       chartType: ChartType.ring,
                       ringStrokeWidth: 32.0,
                       centerText: "Debited",
+                      colorList: colorList,
                       chartValuesOptions: const ChartValuesOptions(
                         showChartValueBackground: true,
                         showChartValuesInPercentage: true,

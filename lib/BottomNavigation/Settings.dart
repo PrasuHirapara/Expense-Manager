@@ -18,7 +18,8 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool _isVisible = false;
-  static final String user_uid = FirebaseAuth.instance.currentUser!.uid;
+
+  static final String userUID = FirebaseAuth.instance.currentUser!.uid;
   static String first_name = "";
   static String last_name = "";
   static String email = "";
@@ -38,7 +39,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
 
-    fetchUserInformation(user_uid);
+    fetchUserInformation(userUID);
 
     return Scaffold(
       backgroundColor: appPrimary,
@@ -93,10 +94,83 @@ class _SettingsState extends State<Settings> {
               const SizedBox(height: 20,),
 
               ListTile(
-                leading: const Icon(Icons.change_circle_outlined,color: Colors.white,size: 30,),
-                title: Text('Change Password',style: settingTextStyle()),
+                leading: const Icon(Icons.lock_reset_outlined,color: Colors.white,size: 30,),
+                title: Text('Reset Expenses',style: settingTextStyle()),
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPassword()));
+                  showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Reset Expenses',style: TextStyle(fontSize: 30),),
+                        content: const Text('Your expense history will deleted',style: TextStyle(fontSize: 17),),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('NO'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+
+                              Map<String, int> balance = {
+                                'credited': 0,
+                                'debited': 0
+                              };
+                              Map<int, String> item = {
+                                0: 'Other',
+                                1: 'Deposit',
+                                2: 'Withdraw',
+                                3: 'Investment',
+                                4: 'Bank',
+                                5: 'Business',
+                                6: 'Food',
+                                7: 'Grocery',
+                                8: 'Hotel',
+                                9: 'Stationary',
+                                10: 'Collage',
+                                11: 'Festivals',
+                              };
+                              Map<String, dynamic> creditItem = {
+                                'Other': 0,
+                                'Deposit': 0,
+                                'Withdraw': 0,
+                                'Investment': 0,
+                                'Bank': 0,
+                                'Business': 0,
+                                'Food': 0,
+                                'Grocery': 0,
+                                'Hotel': 0,
+                                'Stationary': 0,
+                                'Collage': 0,
+                                'Festivals': 0,
+                              };
+                              Map<String, dynamic> debitItem = {
+                                'Other': 0,
+                                'Deposit': 0,
+                                'Withdraw': 0,
+                                'Investment': 0,
+                                'Bank': 0,
+                                'Business': 0,
+                                'Food': 0,
+                                'Grocery': 0,
+                                'Hotel': 0,
+                                'Stationary': 0,
+                                'Collage': 0,
+                                'Festivals': 0,
+                              };
+
+                              await FirebaseFirestore.instance.collection('balance').doc(userUID).set(balance);
+
+                              await FirebaseFirestore.instance.collection('credit_analysis').doc(userUID).set(creditItem);
+
+                              await FirebaseFirestore.instance.collection('debit_analysis').doc(userUID).set(debitItem);
+
+                            },
+                            child: const Text('YES'),
+                          ),
+                        ],
+                      )
+                  );
                 },
               ),
 
@@ -115,6 +189,16 @@ class _SettingsState extends State<Settings> {
                 },
                 leading: const Icon(Icons.developer_board,color: Colors.white,size: 30,),
                 title: Text('Contact Developer',style: settingTextStyle()),
+              ),
+
+              const Divider(),
+
+              ListTile(
+                leading: const Icon(Icons.change_circle_outlined,color: Colors.white,size: 30,),
+                title: Text('Change Password',style: settingTextStyle()),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPassword()));
+                },
               ),
 
               const Divider(),

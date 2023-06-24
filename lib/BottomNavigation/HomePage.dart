@@ -13,8 +13,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  late OverlayEntry _overlayEntry;
+  List<DocumentSnapshot> documents = [];
+
   bool credit = true;
   bool debit = false;
+  bool confirmDelete = true;
+
+  late String date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).toString();
+  DateTime selectedDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   final String userUID = FirebaseAuth.instance.currentUser!.uid;
   final TextEditingController numberController = TextEditingController();
@@ -72,8 +80,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState(){
     super.initState();
+    setState(() {
+      date = getCurrentDateTime();
+    });
     getBalance();
     getMap();
+    _overlayEntry = OverlayEntry(builder: (context) => _buildReactionPopup());
+    _fetchData();
   }
 
   @override
@@ -430,56 +443,61 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(20),
                         color: Colors.grey[800],
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(docs[index]['date'], style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white),
-                              ),
-
-                              const SizedBox(width: 10,),
-
-                              docs[index]['credited'] != 0
-                                  ? Text('credited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.green),
-                              )
-                                  :  Text('debited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.red),
-                              )
-                            ],
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text('Amount : ${docs[index]['credited'] != 0 ? docs[index]['credited'] : docs[index]['debited'] }',
-                                style: const TextStyle(fontSize: 18,
+                      child: GestureDetector(
+                        onLongPress: () {
+                          Overlay.of(context).insert(_overlayEntry);
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(docs[index]['date'], style: const TextStyle(
+                                    fontSize: 18,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.white),
-                              ),
-                              const SizedBox(height: 5,),
-                              docs[index]['description'] != ""
-                                  ? Text('Description : ${docs[index]['description']}',
-                                style: const TextStyle(fontSize: 18,
+                                ),
+
+                                const SizedBox(width: 10,),
+
+                                docs[index]['credited'] != 0
+                                    ? Text('credited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
+                                    fontSize: 17,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white),
-                              )
-                                  : const Text(''),
-                              docs[index]['description'] != "" ? const SizedBox(height: 15,) : const SizedBox(height: 1,)
-                            ],
-                          )
-                        ],
+                                    color: Colors.green),
+                                )
+                                    :  Text('debited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.red),
+                                )
+                              ],
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text('Amount : ${docs[index]['credited'] != 0 ? docs[index]['credited'] : docs[index]['debited'] }',
+                                  style: const TextStyle(fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white),
+                                ),
+                                const SizedBox(height: 5,),
+                                docs[index]['description'] != ""
+                                    ? Text('Description : ${docs[index]['description']}',
+                                  style: const TextStyle(fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white),
+                                )
+                                    : const Text(''),
+                                docs[index]['description'] != "" ? const SizedBox(height: 15,) : const SizedBox(height: 1,)
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -493,6 +511,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _fetchData() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('history')
+        .doc(userUID)
+        .collection(userUID)
+        .get();
+
+    setState(() {
+      documents = snapshot.docs;
+    });
+  }
+
   Container _buildBottomSheet(BuildContext context){
 
     final Map<String, double> updateCreditItem = CreditItem.map(
@@ -503,7 +533,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     return Container(
-        height: 380,
+        height: 410,
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
@@ -870,6 +900,9 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 15),
 
+
+              const SizedBox(height: 15),
+
               TextFormField(
                 controller: numberController,
                 obscureText: false,
@@ -930,81 +963,171 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 20,),
 
-              Container(
-                alignment: Alignment.center,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  label: const Text('Save'),
-                  onPressed: () async {
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                      );
 
-                    int ammCredit = credit ? int.parse(numberController.text) : 0;
-                    int ammDebit = debit ? int.parse(numberController.text) : 0;
+                      setState(() {
+                        date = '${picked?.day}-${picked?.month}-${picked?.year}';
+                        selectedDate = DateTime(picked!.day,picked.month,picked.day);
+                        _scaffoldKey
+                            .currentState
+                            ?.showBottomSheet((context) => _buildBottomSheet(context));
+                      });
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 200,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade700,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: ListTile(
+                        leading: const Icon(Icons.date_range_outlined,color: Colors.white,),
+                        title: Text(date,style: const TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.w500),),
+                      ),
+                    ),
+                  ),
 
-                    String date = getCurrentDateTime();
-                    String decription = descriptionController.text;
+                  const SizedBox(width: 5,),
 
-                    credit ? updateCreditItem[item[selectedIndex]!] = (updateCreditItem[item[selectedIndex]]! + ammCredit) : null;
+                  Container(
+                    alignment: Alignment.center,
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.save),
+                      label: const Text('Save'),
+                      onPressed: () async {
 
-                    debit ? updateDebitItem[item[selectedIndex]!] = (updateDebitItem[item[selectedIndex]]! + ammDebit) : null;
+                        DateTime currentTime = DateTime.now();
 
-                    if(numberController.toString().isNotEmpty){
-                      if(credit){
-                        balance = {
-                          'credited': credited + ammCredit,
-                          'debited': debited
-                        };
-                      }else{
-                        balance = {
-                          'credited': credited ,
-                          'debited': debited + ammDebit
-                        };
+                        DateTime combinedDateTime = DateTime(
+                          selectedDate.year,
+                          selectedDate.month,
+                          selectedDate.day,
+                          currentTime.hour,
+                          currentTime.minute,
+                          currentTime.second,
+                        );
+
+                        Timestamp timestamp = Timestamp.fromDate(combinedDateTime);
+
+                        int ammCredit = credit ? int.parse(numberController.text) : 0;
+                        int ammDebit = debit ? int.parse(numberController.text) : 0;
+
+                        String decription = descriptionController.text;
+
+                        credit ? updateCreditItem[item[selectedIndex]!] = (updateCreditItem[item[selectedIndex]]! + ammCredit) : null;
+
+                        debit ? updateDebitItem[item[selectedIndex]!] = (updateDebitItem[item[selectedIndex]]! + ammDebit) : null;
+
+                        if(numberController.toString().isNotEmpty){
+                          if(credit){
+                            balance = {
+                              'credited': credited + ammCredit,
+                              'debited': debited
+                            };
+                          }else{
+                            balance = {
+                              'credited': credited ,
+                              'debited': debited + ammDebit
+                            };
+                          }
+
+                          await FirebaseFirestore.instance.collection('balance').doc(userUID).set(balance)
+                              .then((value){
+                                setState(() {
+                                  credited = balance['credited'];
+                                  debited = balance['debited'];
+                                });
+                                numberController.clear();
+                                descriptionController.clear();
+                          });
+
+                          await FirebaseFirestore.instance.collection('credit_analysis').doc(userUID).set(updateCreditItem);
+
+                          await FirebaseFirestore.instance.collection('debit_analysis').doc(userUID).set(updateDebitItem);
+
+                          credit
+                              ? await FirebaseFirestore.instance
+                              .collection('history')
+                              .doc(userUID)
+                              .collection(userUID)
+                              .add({
+                            'credited': ammCredit,
+                            'item': item[selectedIndex]?.toLowerCase(),
+                            'description': decription,
+                            'debited': 0,
+                            'date': date.toString(),
+                            'timestamp': timestamp,
+                          })
+                              : await FirebaseFirestore.instance
+                              .collection('history')
+                              .doc(userUID)
+                              .collection(userUID)
+                              .add({
+                            'credited': 0,
+                            'debited': ammDebit,
+                            'item': item[selectedIndex]?.toLowerCase(),
+                            'description': descriptionController.text.toString(),
+                            'date': date.toString(),
+                            'timestamp': timestamp,
+                          });
+                        }
                       }
-
-                      await FirebaseFirestore.instance.collection('balance').doc(userUID).set(balance)
-                          .then((value){
-                            setState(() {
-                              credited = balance['credited'];
-                              debited = balance['debited'];
-                            });
-                            numberController.clear();
-                            descriptionController.clear();
-                      });
-
-                      await FirebaseFirestore.instance.collection('credit_analysis').doc(userUID).set(updateCreditItem);
-
-                      await FirebaseFirestore.instance.collection('debit_analysis').doc(userUID).set(updateDebitItem);
-
-                      credit
-                          ? await FirebaseFirestore.instance
-                          .collection('history')
-                          .doc(userUID)
-                          .collection(userUID)
-                          .add({
-                        'credited': ammCredit,
-                        'item': item[selectedIndex]?.toLowerCase(),
-                        'description': decription,
-                        'debited': 0,
-                        'date': date,
-                        'timestamp': Timestamp.now(),
-                      })
-                          : await FirebaseFirestore.instance
-                          .collection('history')
-                          .doc(userUID)
-                          .collection(userUID)
-                          .add({
-                        'credited': 0,
-                        'debited': ammDebit,
-                        'item': item[selectedIndex]?.toLowerCase(),
-                        'description': descriptionController.text.toString(),
-                        'date': date,
-                        'timestamp': Timestamp.now(),
-                      });
-                    }
-                  }
-                ),
+                    ),
+                  ),
+                ],
               )
             ]
         )
     );
   }
+
+  Widget _buildReactionPopup() {
+    return Positioned(
+      top: 200,
+      left: 50,
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const SizedBox(width: 10,),
+            const Icon(Icons.delete,color: Colors.red,),
+            const SizedBox(width: 5,),
+            GestureDetector(
+              onTap: () async {
+                _overlayEntry.remove();
+              },
+                child: const Text('Delete',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)
+            ),
+            const SizedBox(width: 20,),
+            const Icon(Icons.cancel,color: Colors.red,),
+            const SizedBox(width: 5,),
+            GestureDetector(
+                onTap: () async {
+                  _overlayEntry.remove();
+                },
+                child: const Text('Cancel',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)
+            ),
+            const SizedBox(width: 10,),
+          ],
+        ),
+      ),
+    );
+  }
 }
+
