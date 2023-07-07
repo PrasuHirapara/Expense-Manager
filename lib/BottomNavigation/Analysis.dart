@@ -57,7 +57,9 @@ class _AnalysisState extends State<Analysis> {
     Colors.indigo,
     Colors.pink,
     Colors.purple,
-    Colors.teal
+    Colors.teal,
+    Colors.deepOrange,
+    Colors.deepPurpleAccent,
   ];
 
   @override

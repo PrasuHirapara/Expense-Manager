@@ -14,12 +14,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  late OverlayEntry _overlayEntry;
-  List<DocumentSnapshot> documents = [];
-
   bool credit = true;
   bool debit = false;
   bool confirmDelete = true;
+  bool _isExpanded = false;
 
   late String date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).toString();
   DateTime selectedDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
@@ -33,7 +31,10 @@ class _HomePageState extends State<HomePage> {
   int debited = 0;
   int selectedIndex = 0;
 
+  double _buildHistoryHeight = 100;
+
   late Map<String, dynamic> balance;
+  late List<dynamic> historyDates;
   Map<int, String> item = {
     0: 'Other',
     1: 'Deposit',
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage> {
     10: 'Collage',
     11: 'Festivals',
   };
-  Map<String, dynamic> CreditItem = {
+  Map<String, dynamic> creditItem = {
     'Other': 0,
     'Deposit': 0,
     'Withdraw': 0,
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> {
     'Collage': 0,
     'Festivals': 0,
   };
-  Map<String, dynamic> DebitItem = {
+  Map<String, dynamic> debitItem = {
     'Other': 0,
     'Deposit': 0,
     'Withdraw': 0,
@@ -84,9 +85,8 @@ class _HomePageState extends State<HomePage> {
       date = getCurrentDateTime();
     });
     getBalance();
+    getLength();
     getMap();
-    _overlayEntry = OverlayEntry(builder: (context) => _buildReactionPopup());
-    _fetchData();
   }
 
   @override
@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.red),),
-                              Text('${debited}', style: const TextStyle(fontSize: 18,
+                              Text('$debited', style: const TextStyle(fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.red),)
                             ],
@@ -192,8 +192,8 @@ class _HomePageState extends State<HomePage> {
                       width: 100,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
+                        color: selectedContainer,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(child: Text(item[2]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                     ),
@@ -207,8 +207,8 @@ class _HomePageState extends State<HomePage> {
                       width: 100,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
+                        color: selectedContainer,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(child: Text(item[3]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                     ),
@@ -216,14 +216,14 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(width: 5,),
                   GestureDetector(
                     onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'business')));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'business')));
                     },
                     child: Container(
                       width: 100,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
+                        color: selectedContainer,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(child: Text(item[4]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                     ),
@@ -231,14 +231,14 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(width: 5,),
                   GestureDetector(
                     onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'food')));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'food')));
                     },
                     child: Container(
                       width: 100,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
+                        color: selectedContainer,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(child: Text(item[5]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                     ),
@@ -246,14 +246,14 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(width: 5,),
                   GestureDetector(
                     onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'grocery')));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'grocery')));
                     },
                     child: Container(
                       width: 100,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
+                        color: selectedContainer,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(child: Text(item[6]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                     ),
@@ -261,14 +261,14 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(width: 5,),
                   GestureDetector(
                     onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'hotel')));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'hotel')));
                     },
                     child: Container(
                       width: 100,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
+                        color: selectedContainer,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(child: Text(item[7]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                     ),
@@ -282,8 +282,8 @@ class _HomePageState extends State<HomePage> {
                       width: 100,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
+                        color: selectedContainer,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(child: Text(item[8]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                     ),
@@ -297,8 +297,8 @@ class _HomePageState extends State<HomePage> {
                       width: 100,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
+                        color: selectedContainer,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(child: Text(item[9]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                     ),
@@ -312,8 +312,8 @@ class _HomePageState extends State<HomePage> {
                       width: 100,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
+                        color: selectedContainer,
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(child: Text(item[10]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
                     ),
@@ -339,16 +339,16 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 20,),
 
-            _buildTransactionHistory()
+            _buildDateHistory()
           ],
         ),
       ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-            _scaffoldKey
-            .currentState
-            ?.showBottomSheet((context) => _buildBottomSheet(context));
+          _scaffoldKey
+              .currentState
+              ?.showBottomSheet((context) => _buildBottomSheet(context));
         },
         child: const Icon(Icons.add),
       ),
@@ -387,27 +387,91 @@ class _HomePageState extends State<HomePage> {
     DocumentSnapshot documentSnapshot =
     await firestore.collection('credit_analysis').doc(userUID).get();
 
-    DocumentSnapshot documentSnapshot0 =
-    await firestore.collection('debit_analysis').doc(userUID).get();
-
     if (documentSnapshot.exists) {
       Map<String, dynamic> map = documentSnapshot.data() as Map<String, dynamic>;
       setState(() {
-        CreditItem = map;
+        creditItem = map;
       });
     }
+
+    DocumentSnapshot documentSnapshot0 =
+    await firestore.collection('debit_analysis').doc(userUID).get();
+
     if(documentSnapshot0.exists){
       Map<String, dynamic> map2 = documentSnapshot0.data() as Map<String, dynamic>;
       setState(() {
-        DebitItem = map2;
+        debitItem = map2;
       });
-    } else {
+    }else {
       return;
     }
   }
 
-  Expanded _buildTransactionHistory(){
+  Expanded _buildDateHistory(){
     return  Expanded(
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('date_transaction')
+            .doc(userUID)
+            .collection(userUID)
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          List<DocumentSnapshot> docs = snapshot.data!.docs;
+          if (snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text(
+                'No transaction history',
+                style: TextStyle(color: Colors.red),
+              ),
+            );
+          }
+
+          return ListView.builder(
+            reverse: false,
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey[800],
+                      ),
+                      child: ExpansionTile(
+                        leading: const Icon(Icons.date_range_outlined,color: Colors.white,),
+                        title: Text(docs[index]['date'],style: const TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.white),),
+                        onExpansionChanged: (bool expanded) async {
+                              setState(() {
+                                _isExpanded = expanded;
+                              });
+                        },
+                        children: [
+                          _isExpanded ? _buildAllHistory(docs[index]['date']) : const SizedBox(height: 1,)
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15,)
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildAllHistory(String date){
+    return  SizedBox(
+      height: _buildHistoryHeight,
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('history')
@@ -436,72 +500,61 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               return Column(
                 children: [
-                  Padding(
+                  docs[index]['date'] == date
+                      ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.grey[800],
-                      ),
-                      child: GestureDetector(
-                        onLongPress: () {
-                          Overlay.of(context).insert(_overlayEntry);
-                        },
-                        child: Column(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(docs[index]['date'], style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white),
-                                ),
 
-                                const SizedBox(width: 10,),
+                            const SizedBox(width: 10,),
 
-                                docs[index]['credited'] != 0
-                                    ? Text('credited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.green),
-                                )
-                                    :  Text('debited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.red),
-                                )
-                              ],
-                            ),
-
-                            const SizedBox(height: 10),
-
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text('Amount : ${docs[index]['credited'] != 0 ? docs[index]['credited'] : docs[index]['debited'] }',
-                                  style: const TextStyle(fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white),
-                                ),
-                                const SizedBox(height: 5,),
-                                docs[index]['description'] != ""
-                                    ? Text('Description : ${docs[index]['description']}',
-                                  style: const TextStyle(fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white),
-                                )
-                                    : const Text(''),
-                                docs[index]['description'] != "" ? const SizedBox(height: 15,) : const SizedBox(height: 1,)
-                              ],
+                            docs[index]['credited'] != 0
+                                ? Text('credited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.green),
                             )
+                                :  Text('debited - ${docs[index]['item']}'.toUpperCase(), style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.red),
+                            ),
+                            Text('Amount : ${docs[index]['credited'] != 0 ? docs[index]['credited'] : docs[index]['debited'] }',
+                              style: const TextStyle(fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
                           ],
                         ),
-                      ),
+
+                        const SizedBox(height: 10),
+
+                        docs[index]['description'] != ""
+                            ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+
+                            const SizedBox(height: 5,),
+
+                            Text('Description : ${docs[index]['description']}',
+                              style: const TextStyle(fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
+                            const Divider()
+                          ],
+                        )
+                            : const SizedBox(height: 0.1),
+
+                        const Divider()
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 15,)
+                  )
+                      : const SizedBox(height: 0.1,)
                 ],
               );
             },
@@ -511,24 +564,27 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _fetchData() async {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+  Future<void> getLength() async {
+
+    final QuerySnapshot<Map<String, dynamic>> snapshot =
+    await FirebaseFirestore.instance
         .collection('history')
         .doc(userUID)
         .collection(userUID)
         .get();
+    final int length = snapshot.size;
 
     setState(() {
-      documents = snapshot.docs;
+      _buildHistoryHeight = length * 100;
     });
   }
 
   Container _buildBottomSheet(BuildContext context){
 
-    final Map<String, double> updateCreditItem = CreditItem.map(
+    final Map<String, double> updateCreditItem = creditItem.map(
           (key, value) => MapEntry(key, value.toDouble()),
     );
-    final Map<String, double> updateDebitItem = DebitItem.map(
+    final Map<String, double> updateDebitItem = debitItem.map(
           (key, value) => MapEntry(key, value.toDouble()),
     );
 
@@ -541,8 +597,8 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const SizedBox(height: 20,),
 
@@ -588,318 +644,315 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 10),
 
-             SingleChildScrollView(
-               scrollDirection: Axis.horizontal,
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.start,
-                 children: [
-                   // other
-                   GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 0;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 0 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[0]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   const SizedBox(width: 5,),
-                   //deposit
-                   credit ? const SizedBox(height: 1,) : GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 1;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 1 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[1]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   const SizedBox(width: 5,),
-                   //Withdraw
-                   debit ? const SizedBox(height: 1,) : GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 2;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 2 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[2]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   const SizedBox(width: 5,),
-                   //
-                   //Investment
-                   GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 3;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 3 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[3]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   const SizedBox(width: 5,),
-                   //Bank
-                   GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 4;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 4 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[4]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   const SizedBox(width: 5,),
-                   //Business
-                   GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 5;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 5 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[5]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   const SizedBox(width: 5,),
-                   //Food
-                   credit ? const SizedBox(height: 1,) : GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 6;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 6 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[6]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   credit ? const SizedBox(height: 1,) :const SizedBox(width: 5,),
-                   //Grocery
-                   credit ? const SizedBox(height: 1,) : GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 7;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 7 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[7]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   credit ? const SizedBox(height: 1,) : const SizedBox(width: 5,),
-                   //Hotel
-                   credit ? const SizedBox(height: 1,) : GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 8;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 8 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[8]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   credit ? const SizedBox(height: 1,) :const SizedBox(width: 5,),
-                   // Stationary
-                   credit ? const SizedBox(height: 1,) : GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 9;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 9 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[9]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   credit ? const SizedBox(height: 1,) : const SizedBox(width: 5,),
-                   //Collage
-                   GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 10;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 10 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[10]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   const SizedBox(width: 5,),
-                   //Festivals
-                   GestureDetector(
-                     onTap: (){
-                       setState(() {
-                         selectedIndex = 11;
-                         _scaffoldKey
-                             .currentState
-                             ?.showBottomSheet((context) => _buildBottomSheet(context));
-                       });
-                     },
-                     child: Container(
-                       width: 100,
-                       height: 50,
-                       decoration: BoxDecoration(
-                           color: Colors.black,
-                           borderRadius: BorderRadius.circular(15),
-                           border: Border.all(
-                               color: selectedIndex == 11 ? Colors.white : Colors.black,
-                               width: 2
-                           )
-                       ),
-                       child: Center(child: Text(item[11]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                     ),
-                   ),
-                   const SizedBox(width: 5,),
-                 ],
-               ),
-             ),
-
-              const SizedBox(height: 15),
-
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    // other
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 0;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 0 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[0]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                    //deposit
+                    credit ? const SizedBox(height: 1,) : GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 1;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 1 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[1]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                    //Withdraw
+                    debit ? const SizedBox(height: 1,) : GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 2;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 2 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[2]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                    //
+                    //Investment
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 3;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 3 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[3]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                    //Bank
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 4;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 4 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[4]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                    //Business
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 5;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 5 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[5]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                    //Food
+                    credit ? const SizedBox(height: 1,) : GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 6;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 6 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[6]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    credit ? const SizedBox(height: 1,) :const SizedBox(width: 5,),
+                    //Grocery
+                    credit ? const SizedBox(height: 1,) : GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 7;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 7 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[7]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    credit ? const SizedBox(height: 1,) : const SizedBox(width: 5,),
+                    //Hotel
+                    credit ? const SizedBox(height: 1,) : GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 8;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 8 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[8]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    credit ? const SizedBox(height: 1,) :const SizedBox(width: 5,),
+                    // Stationary
+                    credit ? const SizedBox(height: 1,) : GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 9;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 9 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[9]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    credit ? const SizedBox(height: 1,) : const SizedBox(width: 5,),
+                    //Collage
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 10;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 10 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[10]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                    //Festivals
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          selectedIndex = 11;
+                          _scaffoldKey
+                              .currentState
+                              ?.showBottomSheet((context) => _buildBottomSheet(context));
+                        });
+                      },
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                color: selectedIndex == 11 ? Colors.white : Colors.black,
+                                width: 2
+                            )
+                        ),
+                        child: Center(child: Text(item[11]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                      ),
+                    ),
+                    const SizedBox(width: 5,),
+                  ],
+                ),
+              ),
 
               const SizedBox(height: 15),
 
@@ -1003,86 +1056,94 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     alignment: Alignment.center,
                     child: ElevatedButton.icon(
-                      icon: const Icon(Icons.save),
-                      label: const Text('Save'),
-                      onPressed: () async {
+                        icon: const Icon(Icons.save),
+                        label: const Text('Save'),
+                        onPressed: () async {
 
-                        DateTime currentTime = DateTime.now();
+                          DateTime currentTime = DateTime.now();
 
-                        DateTime combinedDateTime = DateTime(
-                          selectedDate.year,
-                          selectedDate.month,
-                          selectedDate.day,
-                          currentTime.hour,
-                          currentTime.minute,
-                          currentTime.second,
-                        );
+                          DateTime combinedDateTime = DateTime(
+                            selectedDate.year,
+                            selectedDate.month,
+                            selectedDate.day,
+                            currentTime.hour,
+                            currentTime.minute,
+                            currentTime.second,
+                          );
 
-                        Timestamp timestamp = Timestamp.fromDate(combinedDateTime);
+                          Timestamp customTimestamp = Timestamp.fromDate(combinedDateTime);
 
-                        int ammCredit = credit ? int.parse(numberController.text) : 0;
-                        int ammDebit = debit ? int.parse(numberController.text) : 0;
+                          int ammCredit = credit ? int.parse(numberController.text) : 0;
+                          int ammDebit = debit ? int.parse(numberController.text) : 0;
 
-                        String decription = descriptionController.text;
+                          String description = descriptionController.text;
 
-                        credit ? updateCreditItem[item[selectedIndex]!] = (updateCreditItem[item[selectedIndex]]! + ammCredit) : null;
+                          credit ? updateCreditItem[item[selectedIndex]!] = (updateCreditItem[item[selectedIndex]]! + ammCredit) : null;
 
-                        debit ? updateDebitItem[item[selectedIndex]!] = (updateDebitItem[item[selectedIndex]]! + ammDebit) : null;
+                          debit ? updateDebitItem[item[selectedIndex]!] = (updateDebitItem[item[selectedIndex]]! + ammDebit) : null;
 
-                        if(numberController.toString().isNotEmpty){
-                          if(credit){
-                            balance = {
-                              'credited': credited + ammCredit,
-                              'debited': debited
-                            };
-                          }else{
-                            balance = {
-                              'credited': credited ,
-                              'debited': debited + ammDebit
-                            };
+                          if(numberController.toString().isNotEmpty){
+                            if(credit){
+                              balance = {
+                                'credited': credited + ammCredit,
+                                'debited': debited
+                              };
+                            }else{
+                              balance = {
+                                'credited': credited ,
+                                'debited': debited + ammDebit
+                              };
+                            }
+
+                            await FirebaseFirestore.instance.collection('balance').doc(userUID).set(balance)
+                                .then((value){
+                              setState(() {
+                                credited = balance['credited'];
+                                debited = balance['debited'];
+                              });
+                              numberController.clear();
+                              descriptionController.clear();
+                            });
+
+                            await FirebaseFirestore.instance.collection('credit_analysis').doc(userUID).set(updateCreditItem);
+
+                            await FirebaseFirestore.instance.collection('debit_analysis').doc(userUID).set(updateDebitItem);
+
+                            await FirebaseFirestore.instance.collection('date_transaction').doc(userUID).collection(userUID).add({
+                              'date': date,
+                              'timestamp': customTimestamp
+                            });
+                           try{
+                             credit
+                                 ? await FirebaseFirestore.instance
+                                 .collection('history')
+                                 .doc(userUID)
+                                 .collection(userUID)
+                                 .add({
+                               'credited': ammCredit,
+                               'item': item[selectedIndex]?.toLowerCase(),
+                               'description': description,
+                               'debited': 0,
+                               'date': date.toString(),
+                               'timestamp': customTimestamp,
+                             })
+                                 : await FirebaseFirestore.instance
+                                 .collection('history')
+                                 .doc(userUID)
+                                 .collection(userUID)
+                                 .add({
+                               'credited': 0,
+                               'debited': ammDebit,
+                               'item': item[selectedIndex]?.toLowerCase(),
+                               'description': description,
+                               'date': date.toString(),
+                               'timestamp': customTimestamp,
+                             });
+                           }catch(error){
+                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()),duration: const Duration(seconds: 2),));
+                           }
                           }
-
-                          await FirebaseFirestore.instance.collection('balance').doc(userUID).set(balance)
-                              .then((value){
-                                setState(() {
-                                  credited = balance['credited'];
-                                  debited = balance['debited'];
-                                });
-                                numberController.clear();
-                                descriptionController.clear();
-                          });
-
-                          await FirebaseFirestore.instance.collection('credit_analysis').doc(userUID).set(updateCreditItem);
-
-                          await FirebaseFirestore.instance.collection('debit_analysis').doc(userUID).set(updateDebitItem);
-
-                          credit
-                              ? await FirebaseFirestore.instance
-                              .collection('history')
-                              .doc(userUID)
-                              .collection(userUID)
-                              .add({
-                            'credited': ammCredit,
-                            'item': item[selectedIndex]?.toLowerCase(),
-                            'description': decription,
-                            'debited': 0,
-                            'date': date.toString(),
-                            'timestamp': timestamp,
-                          })
-                              : await FirebaseFirestore.instance
-                              .collection('history')
-                              .doc(userUID)
-                              .collection(userUID)
-                              .add({
-                            'credited': 0,
-                            'debited': ammDebit,
-                            'item': item[selectedIndex]?.toLowerCase(),
-                            'description': descriptionController.text.toString(),
-                            'date': date.toString(),
-                            'timestamp': timestamp,
-                          });
                         }
-                      }
                     ),
                   ),
                 ],
@@ -1091,43 +1152,4 @@ class _HomePageState extends State<HomePage> {
         )
     );
   }
-
-  Widget _buildReactionPopup() {
-    return Positioned(
-      top: 200,
-      left: 50,
-      child: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20)
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const SizedBox(width: 10,),
-            const Icon(Icons.delete,color: Colors.red,),
-            const SizedBox(width: 5,),
-            GestureDetector(
-              onTap: () async {
-                _overlayEntry.remove();
-              },
-                child: const Text('Delete',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)
-            ),
-            const SizedBox(width: 20,),
-            const Icon(Icons.cancel,color: Colors.red,),
-            const SizedBox(width: 5,),
-            GestureDetector(
-                onTap: () async {
-                  _overlayEntry.remove();
-                },
-                child: const Text('Cancel',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)
-            ),
-            const SizedBox(width: 10,),
-          ],
-        ),
-      ),
-    );
-  }
 }
-

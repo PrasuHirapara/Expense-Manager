@@ -17,7 +17,10 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+
   bool _isVisible = false;
+
+  final bugInfo = TextEditingController();
 
   static final String userUID = FirebaseAuth.instance.currentUser!.uid;
   static String first_name = "";
@@ -179,6 +182,9 @@ class _SettingsState extends State<Settings> {
               ListTile(
                 leading: const Icon(Icons.bug_report_outlined,color: Colors.white,size: 30,),
                 title: Text('Report a Bug',style: settingTextStyle()),
+                onTap: (){
+                  reportBug();
+                },
               ),
 
               const Divider(),
@@ -329,5 +335,69 @@ class _SettingsState extends State<Settings> {
     const url = 'mailto:$email';
 
     await launch(url);
+  }
+
+  void reportBug() {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Report Bug',style: TextStyle(fontSize: 30),),
+
+          actions: [
+            const SizedBox(height: 10,),
+            TextFormField(
+              controller: bugInfo,
+              obscureText: false,
+              textInputAction: TextInputAction.next,
+              style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.white),
+              cursorColor: Colors.red,
+              maxLines: 5,
+              decoration: InputDecoration(
+                labelText: 'Describe a Bug',
+                labelStyle: const TextStyle(fontWeight: FontWeight.w600,color: Colors.red),
+                prefixIconColor: Colors.white,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(color: Colors.purpleAccent),
+                ),
+                fillColor: Colors.grey[700],
+                filled: true,
+              ),
+            ),
+            const SizedBox(height: 10,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    bugInfo.clear();
+                    Navigator.pop(context);
+                  },
+                  child: const Text('NO'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    FirebaseFirestore
+                        .instance
+                        .collection('bugs')
+                        .doc(userUID)
+                        .collection(userUID)
+                        .add({
+                      'description': bugInfo.text.trim()
+                    });
+                    bugInfo.clear();
+                    Navigator.pop(context);
+                  },
+                  child: const Text('YES'),
+                ),
+              ],
+            )
+          ],
+        )
+    );
   }
 }
