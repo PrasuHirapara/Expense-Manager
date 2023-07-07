@@ -339,7 +339,7 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 20,),
 
-            _buildDateHistory()
+            buildDateHistory()
           ],
         ),
       ),
@@ -407,7 +407,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Expanded _buildDateHistory(){
+  Expanded buildDateHistory(){
     return  Expanded(
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -454,7 +454,7 @@ class _HomePageState extends State<HomePage> {
                               });
                         },
                         children: [
-                          _isExpanded ? _buildAllHistory(docs[index]['date']) : const SizedBox(height: 1,)
+                          _isExpanded ? buildAllHistory(docs[index]['date']) : const SizedBox(height: 1,)
                         ],
                       ),
                     ),
@@ -469,7 +469,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildAllHistory(String date){
+  Widget buildAllHistory(String date){
     return  SizedBox(
       height: _buildHistoryHeight,
       child: StreamBuilder<QuerySnapshot>(
