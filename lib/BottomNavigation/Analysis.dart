@@ -146,7 +146,7 @@ class _AnalysisState extends State<Analysis> {
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

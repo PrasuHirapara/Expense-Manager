@@ -182,7 +182,7 @@ class _SettingsState extends State<Settings> {
               ListTile(
                 leading: const Icon(Icons.bug_report_outlined,color: Colors.white,size: 30,),
                 title: Text('Report a Bug',style: settingTextStyle()),
-                onTap: (){
+                onTap: () async{
                   reportBug();
                 },
               ),
@@ -337,7 +337,7 @@ class _SettingsState extends State<Settings> {
     await launch(url);
   }
 
-  void reportBug() {
+  void reportBug() async{
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -380,7 +380,7 @@ class _SettingsState extends State<Settings> {
                   child: const Text('NO'),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async{
                     FirebaseFirestore
                         .instance
                         .collection('bugs')

@@ -454,7 +454,7 @@ class _HomePageState extends State<HomePage> {
                               });
                         },
                         children: [
-                          _isExpanded ? buildAllHistory(docs[index]['date']) : const SizedBox(height: 1,)
+                          _isExpanded ? _buildAllHistory(docs[index]['date']) : const SizedBox(height: 1,)
                         ],
                       ),
                     ),
@@ -469,7 +469,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildAllHistory(String date){
+  Widget _buildAllHistory(String date){
     return  SizedBox(
       height: _buildHistoryHeight,
       child: StreamBuilder<QuerySnapshot>(
@@ -486,7 +486,7 @@ class _HomePageState extends State<HomePage> {
             );
           }
           List<DocumentSnapshot> docs = snapshot.data!.docs;
-          if (snapshot.data!.docs.isEmpty) {
+          if (docs.isEmpty) {
             return const Center(
               child: Text(
                 'No transaction history',
