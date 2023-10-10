@@ -24,7 +24,12 @@ class _SpecificHistoryState extends State<SpecificHistory> {
       body: SafeArea(
           child: Column(
             children: [
+              const SizedBox(height: 10,),
+
+              Text(widget.title,style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.grey),),
+
               const SizedBox(height: 20,),
+
               _buildOtherHistory()
             ],
           )
@@ -63,7 +68,7 @@ class _SpecificHistoryState extends State<SpecificHistory> {
               return docs[index]['item'] == widget.title
                   ? Column(
                    children: [
-                     Padding(
+                    Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Container(
                       decoration: BoxDecoration(
@@ -123,7 +128,7 @@ class _SpecificHistoryState extends State<SpecificHistory> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 15,)
+                   const SizedBox(height: 15,)
                    ],
                   )
                   : const SizedBox(width: 1,) ;

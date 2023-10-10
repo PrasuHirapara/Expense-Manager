@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   late String date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).toString();
   DateTime selectedDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
+
   final String userUID = FirebaseAuth.instance.currentUser!.uid;
   final TextEditingController numberController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -34,7 +35,6 @@ class _HomePageState extends State<HomePage> {
   double _buildHistoryHeight = 100;
 
   late Map<String, dynamic> balance;
-  late List<dynamic> historyDates;
   Map<int, String> item = {
     0: 'Other',
     1: 'Deposit',
@@ -160,182 +160,32 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 20,),
 
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'deposit')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color:selectedContainer,
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                              color: selectedIndex == 1 ? Colors.white : Colors.black,
-                              width: 2
-                          )
-                      ),
-                      child: Center(child: Text(item[1]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'withdraw')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[2]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'bank')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[3]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'business')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[4]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'food')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[5]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'grocery')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[6]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'hotel')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[7]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'stationary')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[8]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'collage')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[9]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'festival')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[10]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                  const SizedBox(width: 5,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SpecificHistory(title: 'other')));
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: selectedContainer,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(child: Text(item[0]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+           Container(
+             height: 50,
+             child: ListView.builder(
+                 itemCount: item.length,
+                 scrollDirection: Axis.horizontal,
+                 itemBuilder: (context, index){
+                   return GestureDetector(
+                       onTap: (){
+                         Navigator.push(context, MaterialPageRoute(builder: (context) => SpecificHistory(title: item[index].toString())));
+                       },
+                       child: Padding(
+                         padding: const EdgeInsets.only(right: 5),
+                         child: Container(
+                           width: 100,
+                           height: 50,
+                           decoration: BoxDecoration(
+                               color:selectedContainer,
+                               borderRadius: BorderRadius.circular(15),
+                           ),
+                           child: Center(child: Text(item[index].toString(),style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                         ),
+                       ),
+                     );
+                 }
+             ),
+           ),
 
             const SizedBox(height: 20,),
 
@@ -644,313 +494,39 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 10),
 
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // other
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 0;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 0 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[0]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    const SizedBox(width: 5,),
-                    //deposit
-                    credit ? const SizedBox(height: 1,) : GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 1;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 1 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[1]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    const SizedBox(width: 5,),
-                    //Withdraw
-                    debit ? const SizedBox(height: 1,) : GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 2;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 2 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[2]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    const SizedBox(width: 5,),
-                    //
-                    //Investment
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 3;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 3 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[3]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    const SizedBox(width: 5,),
-                    //Bank
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 4;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 4 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[4]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    const SizedBox(width: 5,),
-                    //Business
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 5;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 5 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[5]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    const SizedBox(width: 5,),
-                    //Food
-                    credit ? const SizedBox(height: 1,) : GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 6;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 6 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[6]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    credit ? const SizedBox(height: 1,) :const SizedBox(width: 5,),
-                    //Grocery
-                    credit ? const SizedBox(height: 1,) : GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 7;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 7 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[7]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    credit ? const SizedBox(height: 1,) : const SizedBox(width: 5,),
-                    //Hotel
-                    credit ? const SizedBox(height: 1,) : GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 8;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 8 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[8]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    credit ? const SizedBox(height: 1,) :const SizedBox(width: 5,),
-                    // Stationary
-                    credit ? const SizedBox(height: 1,) : GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 9;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 9 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[9]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    credit ? const SizedBox(height: 1,) : const SizedBox(width: 5,),
-                    //Collage
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 10;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 10 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[10]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    const SizedBox(width: 5,),
-                    //Festivals
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = 11;
-                          _scaffoldKey
-                              .currentState
-                              ?.showBottomSheet((context) => _buildBottomSheet(context));
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                                color: selectedIndex == 11 ? Colors.white : Colors.black,
-                                width: 2
-                            )
-                        ),
-                        child: Center(child: Text(item[11]!,style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
-                      ),
-                    ),
-                    const SizedBox(width: 5,),
-                  ],
+              Container(
+                height: 50,
+                child: ListView.builder(
+                  itemCount: item.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index){
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                selectedIndex = index;
+                                _scaffoldKey
+                                    .currentState
+                                    ?.showBottomSheet((context) => _buildBottomSheet(context));
+                              });
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                      color: selectedIndex == index ? Colors.white : Colors.black,
+                                      width: 2
+                                  )
+                              ),
+                              child: Center(child: Text(item[index].toString(),style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),)),
+                            ),
+                          ),
+                      );
+                    }
                 ),
               ),
 
